@@ -1,0 +1,6 @@
+fastapi
+streamlit
+uvicorn
+python-dotenv
+langchain
+# We will add LLM and vector store libraries later
