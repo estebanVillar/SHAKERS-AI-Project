@@ -1,0 +1,10 @@
+[
+  {
+    "question": "How do payments work?",
+    "ideal_answer": "Payments are held in a secure escrow account and are released to the freelancer only after the client approves the work."
+  },
+  {
+    "question": "What is a freelancer?",
+    "ideal_answer": "A freelancer is an independent professional offering services on a project basis."
+  }
+]

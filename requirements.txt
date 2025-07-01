@@ -1,6 +1,14 @@
-fastapi
-streamlit
-uvicorn
+# Web Framework
+flask
 python-dotenv
+
+# AI & LangChain
 langchain
-# We will add LLM and vector store libraries later
+langchain-google-genai
+
+# Vector Store & Document Loading
+faiss-cpu
+langchain_community
+
+# Frontend
+streamlit
