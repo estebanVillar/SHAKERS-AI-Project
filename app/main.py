@@ -4,6 +4,8 @@ import os
 import json
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
+import time
+from datetime import datetime
 
 # LangChain components
 from langchain_core.prompts import PromptTemplate
@@ -61,6 +63,8 @@ app = Flask(__name__)
 # --- 5. DEFINE API ENDPOINTS ---
 @app.route('/api/query', methods=['POST'])
 def handle_query():
+    start_time = time.time() # NEW: Record start time
+    
     data = request.get_json()
     if not data or 'query' not in data:
         return jsonify({"error": "Missing 'query' in request body"}), 400
@@ -79,6 +83,22 @@ def handle_query():
             "sources": list(set(sources))
         }
         
+        # --- NEW: LOGGING BLOCK ---
+        end_time = time.time()
+        latency = end_time - start_time
+        
+        log_entry = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "query": user_query,
+            "answer": generated_answer,
+            "sources": list(set(sources)),
+            "latency_ms": round(latency * 1000)
+        }
+        
+        with open("query_logs.jsonl", "a") as f:
+            f.write(json.dumps(log_entry) + "\n")
+        # --- END OF LOGGING BLOCK ---
+
         return jsonify(response_data)
 
     except Exception as e:
