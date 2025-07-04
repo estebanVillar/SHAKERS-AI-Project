@@ -1,0 +1,37 @@
+[
+  {
+    "question": "What is the Parent Document Retriever strategy?",
+    "ideal_answer_keywords": ["parent", "child", "splitter", "context", "vectorized", "retrieves"],
+    "expected_sources": ["rag-pipeline/Ingestion-and-Indexing"]
+  },
+  {
+    "question": "How does the chatbot handle follow-up questions?",
+    "ideal_answer_keywords": ["history", "context", "rephrase", "standalone", "history-aware retriever"],
+    "expected_sources": ["rag-pipeline/Conversational-Retrieval-Chain"]
+  },
+  {
+    "question": "What is the profile vector in the user profile?",
+    "ideal_answer_keywords": ["average", "embedding", "query", "vector", "interest", "numerical"],
+    "expected_sources": ["recommendation-system/User-Profile-and-Interest-Vector"]
+  },
+  {
+    "question": "How are recommendations generated?",
+    "ideal_answer_keywords": ["cosine similarity", "profile vector", "cache", "score", "embedding"],
+    "expected_sources": ["recommendation-system/Recommendation-Generation-Logic"]
+  },
+  {
+    "question": "Explain the intelligent routing feature.",
+    "ideal_answer_keywords": ["frontend", "requests", "optimized", "/api/get_document", "regular expression", "Tell me about"],
+    "expected_sources": ["api-reference/API-Endpoints-Overview", "frontend-and-evaluation/Streamlit-Frontend"]
+  },
+  {
+    "question": "What happens if the answer isn't in the knowledge base?",
+    "ideal_answer_keywords": ["sorry", "don't have enough information", "context", "provided documents"],
+    "expected_sources": ["rag-pipeline/Conversational-Retrieval-Chain"]
+  },
+  {
+    "question": "How is latency measured and displayed?",
+    "ideal_answer_keywords": ["latency_ms", "dashboard", "line chart", "average", "query_logs.jsonl"],
+    "expected_sources": ["frontend-and-evaluation/Metrics-and-Evaluation"]
+  }
+]

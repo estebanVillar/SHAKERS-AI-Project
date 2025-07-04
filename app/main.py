@@ -40,7 +40,7 @@ VECTORSTORE_PATH = os.path.join(CACHE_DIR, 'faiss_pdr_index')
 DOCSTORE_PATH = os.path.join(CACHE_DIR, 'pdr_docstore.pkl')
 USER_PROFILES_PATH = os.path.join(BASE_DIR, 'data', 'evaluation', 'user_profiles.json')
 QUERY_LOGS_PATH = os.path.join(PROJECT_ROOT, 'query_logs.jsonl')
-KNOWLEDGE_BASE_PATH = os.path.join(PROJECT_ROOT, 'data\knowledge_base')
+KNOWLEDGE_BASE_PATH = os.path.join(PROJECT_ROOT, 'data\knowledge_basev2')
 
 os.makedirs(CACHE_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(USER_PROFILES_PATH), exist_ok=True)
@@ -51,7 +51,7 @@ file_lock = threading.Lock()
 # ==============================================================================
 print("Initializing RAG pipeline with Parent Document Retriever...")
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-llm = GoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.2)
+llm = GoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.2)
 
 parent_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
 child_splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=50)

@@ -1,0 +1,19 @@
+[
+  {
+    "user_id": "eval_user_rag_fan",
+    "description": "This user is interested in the core RAG architecture.",
+    "query_history": [
+      "What is the Parent Document Retriever strategy?",
+      "How does the chatbot handle follow-up questions?",
+      "What happens if the answer isn't in the knowledge base?"
+    ]
+  },
+  {
+    "user_id": "eval_user_frontend_dev",
+    "description": "This user cares about the UI and optimizations.",
+    "query_history": [
+      "Explain the intelligent routing feature.",
+      "How is latency measured and displayed?"
+    ]
+  }
+]
