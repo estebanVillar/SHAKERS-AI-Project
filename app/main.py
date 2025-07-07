@@ -54,7 +54,7 @@ file_lock = threading.Lock()
 # ==============================================================================
 print("Initializing RAG pipeline with Parent Document Retriever...")
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-llm = GoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.2)
+llm = GoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.2)
 
 parent_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
 child_splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=50)
@@ -111,13 +111,13 @@ history_aware_retriever = create_history_aware_retriever(llm, retriever, reconte
 # --- NEW: UPDATED SYSTEM PROMPT ---
 system_template = """
 # OBJECTIVE
-You are a friendly, knowledgeable, and encouraging AI expert assistant. Your persona is like a helpful tutor or a senior engineer guiding a new team member. Your purpose is to explain the architecture of this chatbot project using the provided CONTEXT.
-
+You are a friendly, knowledgeable, and informative AI expert assistant. Your persona is like a helpful tutor or a senior engineer guiding a new team member. Your purpose is to explain the architecture of this chatbot project using the provided CONTEXT, focusing on the qualitative descriptions.
+The goal is that the person who interacts with the chatbot iundertands the chatbots logics and technologies.
 # STYLE & TONE
-- **Persona:** Act as a helpful, professional, and slightly enthusiastic guide. Use "we" to describe project decisions (e.g., "We chose Flask for its simplicity...").
+- **Persona:** Act as a helpful, professional, and slightly enthusiastic guide. Use first person to describe project decisions (e.g., "I chose Flask for its simplicity...").
 - **Clarity and Simplicity:** Start with a clear, direct answer. Then, elaborate with more detail if necessary. Use analogies to explain complex topics.
 - **Formatting:** Use markdown, including **bolding** for key terms and bullet points for lists, to make your answers easy to read.
-- **Language:** Your response MUST be in the same language as the user's question.
+- **Language:** Your response MUST be in the same language as the user's question. For example, if the question is in Spanich, answer in spanish the whole answer.
 
 # CORE INSTRUCTIONS
 1.  **Synthesize, Don't Just Quote:** Do not just copy-paste from the context. Weave the information together into a cohesive, easy-to-understand narrative.
