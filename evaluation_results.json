@@ -1,0 +1,114 @@
+{
+    "rag_summary": {
+        "total_questions": 20,
+        "avg_answer_score": 0.6200595238095239,
+        "avg_retrieval_score": 0.825
+    },
+    "rec_summary": {
+        "users_tested": 2,
+        "prediction_steps": 0,
+        "hit_rate": 0
+    },
+    "rag_details": [
+        {
+            "Question": "What is the core mission of this AI project?",
+            "Answer Score": 1.0,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "What is RAG and why is it used?",
+            "Answer Score": 1.0,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "Explain the Parent Document Retriever strategy.",
+            "Answer Score": 1.0,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "What technologies are used for the frontend and backend?",
+            "Answer Score": 0.8333333333333334,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "How does the system create personalized recommendations?",
+            "Answer Score": 0.6666666666666666,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "What is FAISS and what is its role in this project?",
+            "Answer Score": 1.0,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "What happens when a user asks a follow-up question like 'why?'",
+            "Answer Score": 0.8333333333333334,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "How is the user's interest profile updated over time?",
+            "Answer Score": 0.5,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "Describe the data ingestion and indexing pipeline.",
+            "Answer Score": 0.625,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "What is the purpose of the `/api/get_document` endpoint?",
+            "Answer Score": 0.5714285714285714,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "How does the system know if it can't answer a question?",
+            "Answer Score": 0.0,
+            "Retrieval Score": 0.0
+        },
+        {
+            "Question": "What is a vector embedding?",
+            "Answer Score": 1.0,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "Which specific LLM and embedding models are used?",
+            "Answer Score": 0.0,
+            "Retrieval Score": 0.0
+        },
+        {
+            "Question": "Why was LangChain chosen for this project?",
+            "Answer Score": 0.6666666666666666,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "How does the frontend communicate with the backend?",
+            "Answer Score": 0.16666666666666666,
+            "Retrieval Score": 0.5
+        },
+        {
+            "Question": "What kind of metrics can be viewed on the dashboard?",
+            "Answer Score": 0.5714285714285714,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "How does the recommendation evaluation work?",
+            "Answer Score": 0.0,
+            "Retrieval Score": 0.0
+        },
+        {
+            "Question": "Trace the lifecycle of a query from start to finish.",
+            "Answer Score": 0.6666666666666666,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "What is the role of session state in the Streamlit application?",
+            "Answer Score": 0.5,
+            "Retrieval Score": 1.0
+        },
+        {
+            "Question": "What are the key components of a user's profile?",
+            "Answer Score": 0.8,
+            "Retrieval Score": 1.0
+        }
+    ]
+}

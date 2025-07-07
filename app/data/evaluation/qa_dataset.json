@@ -1,37 +1,102 @@
 [
   {
-    "question": "What is the Parent Document Retriever strategy?",
-    "ideal_answer_keywords": ["parent", "child", "splitter", "context", "vectorized", "retrieves"],
-    "expected_sources": ["rag-pipeline/Ingestion-and-Indexing"]
+    "question": "What is the core mission of this AI project?",
+    "ideal_answer_keywords": ["technical support", "architecture", "design", "transparent", "self-documenting", "rag", "recommend"],
+    "expected_sources": ["00-Project-Overview"]
   },
   {
-    "question": "How does the chatbot handle follow-up questions?",
-    "ideal_answer_keywords": ["history", "context", "rephrase", "standalone", "history-aware retriever"],
-    "expected_sources": ["rag-pipeline/Conversational-Retrieval-Chain"]
+    "question": "What is RAG and why is it used?",
+    "ideal_answer_keywords": ["retrieval-augmented generation", "open-book", "knowledge base", "hallucinations", "private data", "grounding"],
+    "expected_sources": ["02_01-Concepts-Intro-to-RAG"]
   },
   {
-    "question": "What is the profile vector in the user profile?",
-    "ideal_answer_keywords": ["average", "embedding", "query", "vector", "interest", "numerical"],
-    "expected_sources": ["recommendation-system/User-Profile-and-Interest-Vector"]
+    "question": "Explain the Parent Document Retriever strategy.",
+    "ideal_answer_keywords": ["trade-off", "small chunks", "large chunks", "search", "precision", "context", "child", "parent"],
+    "expected_sources": ["04_02-Implementation-Parent-Document-Retreiver"]
   },
   {
-    "question": "How are recommendations generated?",
-    "ideal_answer_keywords": ["cosine similarity", "profile vector", "cache", "score", "embedding"],
-    "expected_sources": ["recommendation-system/Recommendation-Generation-Logic"]
+    "question": "What technologies are used for the frontend and backend?",
+    "ideal_answer_keywords": ["streamlit", "flask", "backend", "frontend", "separation of concerns", "api server"],
+    "expected_sources": ["00-Project-Overview", "03_02-Tech-Flask-and-Streamlit"]
   },
   {
-    "question": "Explain the intelligent routing feature.",
-    "ideal_answer_keywords": ["frontend", "requests", "optimized", "/api/get_document", "regular expression", "Tell me about"],
-    "expected_sources": ["api-reference/API-Endpoints-Overview", "frontend-and-evaluation/Streamlit-Frontend"]
+    "question": "How does the system create personalized recommendations?",
+    "ideal_answer_keywords": ["user profile", "profile_vector", "cosine similarity", "inferred_interests", "unconsulted", "diversity"],
+    "expected_sources": ["05_02-Implementation_Recommendation-Algorithm"]
   },
   {
-    "question": "What happens if the answer isn't in the knowledge base?",
-    "ideal_answer_keywords": ["sorry", "don't have enough information", "context", "provided documents"],
-    "expected_sources": ["rag-pipeline/Conversational-Retrieval-Chain"]
+    "question": "What is FAISS and what is its role in this project?",
+    "ideal_answer_keywords": ["vector store", "similarity search", "facebook ai", "indexing", "retrieval", "ann", "nearest neighbor"],
+    "expected_sources": ["03_03-Tech-FAISS-The-Vector-Store"]
   },
   {
-    "question": "How is latency measured and displayed?",
-    "ideal_answer_keywords": ["latency_ms", "dashboard", "line chart", "average", "query_logs.jsonl"],
-    "expected_sources": ["frontend-and-evaluation/Metrics-and-Evaluation"]
+    "question": "What happens when a user asks a follow-up question like 'why?'",
+    "ideal_answer_keywords": ["historyawareretriever", "rephrase", "standalone", "conversational", "context-aware", "chat history"],
+    "expected_sources": ["04_03-Implementation-Conversational-Chain"]
+  },
+  {
+    "question": "How is the user's interest profile updated over time?",
+    "ideal_answer_keywords": ["profile_vector", "moving average", "numpy.mean", "embed the query", "inferred_interests", "user_profiles.json"],
+    "expected_sources": ["05_01-Implementation-User-Profile-Vector"]
+  },
+  {
+    "question": "Describe the data ingestion and indexing pipeline.",
+    "ideal_answer_keywords": ["load", "split", "embed", "store", "directoryloader", "faiss", "inmemorystore", "caching"],
+    "expected_sources": ["04_01-Implementation-Ingestation-and-Indexing"]
+  },
+  {
+    "question": "What is the purpose of the `/api/get_document` endpoint?",
+    "ideal_answer_keywords": ["optimized", "bypasses", "rag chain", "faster", "cheaper", "summarization", "performance"],
+    "expected_sources": ["06_01-Implementation-API-Endpoint"]
+  },
+  {
+    "question": "How does the system know if it can't answer a question?",
+    "ideal_answer_keywords": ["uncertainty protocol", "system prompt", "strict context", "i'm sorry", "i don't have enough information", "graceful failure"],
+    "expected_sources": ["04_03-Implementation-Conversational-Chain"]
+  },
+  {
+    "question": "What is a vector embedding?",
+    "ideal_answer_keywords": ["coordinate", "concept space", "meaning", "numerical", "cosine similarity", "thematic"],
+    "expected_sources": ["02_03-Concepts-Vector-Embeddings"]
+  },
+  {
+    "question": "Which specific LLM and embedding models are used?",
+    "ideal_answer_keywords": ["gemini-1.5-flash", "models/embedding-001", "google", "latency", "context window"],
+    "expected_sources": ["00-Project-Overview", "02_02-Concepts-LLMs-and-Google-Gemini"]
+  },
+  {
+    "question": "Why was LangChain chosen for this project?",
+    "ideal_answer_keywords": ["orchestrator", "general contractor", "abstraction", "modularity", "chains", "compositionality"],
+    "expected_sources": ["03_01-Tech-LangChain-The-AI-Orchestrator"]
+  },
+  {
+    "question": "How does the frontend communicate with the backend?",
+    "ideal_answer_keywords": ["http requests", "api calls", "requests library", "json", "thin client", "separation of concerns"],
+    "expected_sources": ["03_02-Tech-Flask-and-Streamlit", "06_02-Implementation-Frontend-Architecture"]
+  },
+  {
+    "question": "What kind of metrics can be viewed on the dashboard?",
+    "ideal_answer_keywords": ["latency", "total queries", "cost", "tokens", "satisfaction score", "feedback", "pandas"],
+    "expected_sources": ["06_03-Implementation-Metrics-and-Evaluation"]
+  },
+  {
+    "question": "How does the recommendation evaluation work?",
+    "ideal_answer_keywords": ["hold-one-out", "cross-validation", "hit rate", "predict", "user journey", "objective"],
+    "expected_sources": ["06_03-Implementation-Metrics-and-Evaluation"]
+  },
+  {
+    "question": "Trace the lifecycle of a query from start to finish.",
+    "ideal_answer_keywords": ["chat_app.py", "st.chat_input", "/api/query", "rag_chain.invoke", "historyawareretriever", "/api/recommendations"],
+    "expected_sources": ["01-Flow-Lifecycle-of-a-Query"]
+  },
+  {
+    "question": "What is the role of session state in the Streamlit application?",
+    "ideal_answer_keywords": ["st.session_state", "persists", "reruns", "user_id", "chat_sessions", "current_chat_id"],
+    "expected_sources": ["06_02-Implementation-Frontend-Architecture"]
+  },
+  {
+    "question": "What are the key components of a user's profile?",
+    "ideal_answer_keywords": ["query_history", "inferred_interests", "profile_vector", "user_id", "user_profiles.json"],
+    "expected_sources": ["05_01-Implementation-User-Profile-Vector"]
   }
 ]

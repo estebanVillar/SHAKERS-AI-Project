@@ -25,6 +25,10 @@ EMBEDDING_MODEL = "models/embedding-001"
 LLM_MODEL = "gemini-2.0-flash"
 LLM_TEMPERATURE = 0.2
 
+# Prices are per 1 million tokens. Source: https://ai.google.dev/pricing
+INPUT_TOKEN_PRICE_PER_MILLION = 0.35
+OUTPUT_TOKEN_PRICE_PER_MILLION = 1.05
+
 # --- RAG Configuration ---
 PARENT_CHUNK_SIZE = 2000
 PARENT_CHUNK_OVERLAP = 200

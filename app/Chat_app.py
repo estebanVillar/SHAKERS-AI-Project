@@ -4,7 +4,8 @@ import streamlit as st
 import requests
 import re
 from datetime import datetime
-from metrics_page import display_metrics
+# --- FIX: Use an absolute import from the 'app' package ---
+from app.metrics_page import display_metrics
 
 # --- Page and Session State Configuration ---
 st.set_page_config(page_title="Shakers AI Chat", page_icon="🤖", layout="wide")

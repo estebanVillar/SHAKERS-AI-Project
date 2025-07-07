@@ -114,6 +114,7 @@ def handle_query():
         suggestion_chain = suggestion_prompt | rag_pipeline.llm | StrOutputParser()
         
         all_topics = list(rag_pipeline.doc_embeddings_cache.keys())
+        # The same token_callback is used here, so it will correctly sum the tokens from both calls
         suggested_questions_str = suggestion_chain.invoke(
             {"topics": "\n- ".join(all_topics)},
             config={"callbacks": [token_callback]}
@@ -126,17 +127,22 @@ def handle_query():
     else:
         source_docs = result.get('context', [])
         source_topics = sorted(list(set(doc.metadata.get('topic', 'Unknown') for doc in source_docs)))
-        # Use the new helper function to update the profile
         _update_user_profile(user_id, user_query, source_topics)
 
     latency = (time.time() - g.start_time) * 1000
+    input_tokens = token_callback.get_total_prompt_tokens()
+    output_tokens = token_callback.get_total_completion_tokens()
+    # Calculate cost on the backend
+    cost = utils.calculate_cost(input_tokens, output_tokens)
+
     utils.log_query({
         "timestamp": datetime.utcnow().isoformat(), "user_id": user_id,
         "query": user_query, "answer": generated_answer, "sources": source_topics,
         "latency_ms": round(latency),
-        "input_tokens": token_callback.get_total_prompt_tokens(),
-        "output_tokens": token_callback.get_total_completion_tokens(),
-        "total_tokens": token_callback.get_total_tokens()
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": input_tokens + output_tokens,
+        "cost": cost # Log the calculated cost
     })
     return jsonify({"answer": generated_answer, "sources": source_topics})
 
@@ -158,50 +164,40 @@ def handle_recommendations():
     profile_vector = np.array(user_profile["profile_vector"])
     consulted_topics = set(user_profile.get("inferred_interests", []))
     
-    # --- REWORKED LOGIC: Use doc_embeddings_cache for accurate document-level similarity ---
     all_doc_scores = []
     for topic_id, doc_data in rag_pipeline.doc_embeddings_cache.items():
         doc_vector = np.array(doc_data["embedding"])
-        # Cosine similarity is 1 - cosine distance
         similarity = 1 - cosine(profile_vector, doc_vector)
         all_doc_scores.append((similarity, topic_id))
 
-    # Sort by similarity score, descending
     all_doc_scores.sort(key=lambda x: x[0], reverse=True)
 
     recommendations = []
     seen_topic_ids = set()
     
     def get_parent_topic(topic_id):
-        # Extracts '04_Implementation-RAG-Pipeline' from '04_01-...'
         match = re.match(r"(\d{2}_[a-zA-Z_-]+)", topic_id)
         return match.group(1) if match else topic_id
 
-    # PASS 1: Find IDEAL recommendations (new and diverse parent topics)
     seen_parent_topics = set()
     for score, topic_id in all_doc_scores:
         if len(recommendations) >= config.MAX_RECOMMENDATIONS: break
-        
         if topic_id in consulted_topics or topic_id in seen_topic_ids: continue
-
         parent_topic = get_parent_topic(topic_id)
         if parent_topic not in seen_parent_topics:
             recommendations.append({
-                "topic_id": topic_id,
-                "title": _format_topic_title(topic_id),
+                "topic_id": topic_id, "title": _format_topic_title(topic_id),
                 "explanation": "Based on your recent interests, you might find this topic helpful."
             })
             seen_topic_ids.add(topic_id)
             seen_parent_topics.add(parent_topic)
             
-    # PASS 2: FILL remaining slots if Pass 1 wasn't enough (less strict on diversity)
     if len(recommendations) < config.MAX_RECOMMENDATIONS:
         for score, topic_id in all_doc_scores:
             if len(recommendations) >= config.MAX_RECOMMENDATIONS: break
             if topic_id not in consulted_topics and topic_id not in seen_topic_ids:
                 recommendations.append({
-                    "topic_id": topic_id,
-                    "title": _format_topic_title(topic_id),
+                    "topic_id": topic_id, "title": _format_topic_title(topic_id),
                     "explanation": "This related topic might also be of interest to you."
                 })
                 seen_topic_ids.add(topic_id)
@@ -213,11 +209,8 @@ def handle_recommendations():
 def handle_feedback():
     data = request.get_json()
     utils.log_feedback({
-        "timestamp": datetime.utcnow().isoformat(),
-        "user_id": data['user_id'],
-        "query": data['query'],
-        "answer": data['answer'],
-        "score": data['score']
+        "timestamp": datetime.utcnow().isoformat(), "user_id": data['user_id'],
+        "query": data['query'], "answer": data['answer'], "score": data['score']
     })
     return jsonify({"status": "success", "message": "Feedback received"}), 200
 
@@ -252,11 +245,15 @@ def get_document_by_topic():
     )
     answer = f"{summary}\n\n**Source:** {topic_to_find}"
     
-    # --- FIX: Update user profile on this path as well ---
     query_for_profile = f"Tell me about {topic_to_find}"
     _update_user_profile(user_id, query_for_profile, [topic_to_find])
     
     latency = (time.time() - g.start_time) * 1000
+    input_tokens = token_callback.get_total_prompt_tokens()
+    output_tokens = token_callback.get_total_completion_tokens()
+    # Calculate cost on the backend
+    cost = utils.calculate_cost(input_tokens, output_tokens)
+
     utils.log_query({
         "timestamp": datetime.utcnow().isoformat(),
         "user_id": user_id,
@@ -264,13 +261,13 @@ def get_document_by_topic():
         "answer": answer,
         "sources": [topic_to_find],
         "latency_ms": round(latency),
-        "input_tokens": token_callback.get_total_prompt_tokens(),
-        "output_tokens": token_callback.get_total_completion_tokens(),
-        "total_tokens": token_callback.get_total_tokens()
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
+        "total_tokens": input_tokens + output_tokens,
+        "cost": cost # Log the calculated cost
     })
     
     return jsonify({"answer": answer, "sources": [topic_to_find]})
 
 if __name__ == '__main__':
-    # It is recommended to run Flask with a production-ready WSGI server like Gunicorn or Waitress.
     app.run(host='0.0.0.0', port=5000)
