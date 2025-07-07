@@ -5,33 +5,29 @@ import json
 import requests
 import pandas as pd
 from typing import List, Dict, Any
-import re # Import regex module
+# +++ THE FIX: Import the utils module to access the shared function +++
+from app import utils
 
 # --- CONFIGURATION ---
 BASE_URL = "http://127.0.0.1:5000"
 QA_DATASET_PATH = os.path.join("app", "data", "evaluation", "qa_dataset.json")
 USER_PROFILES_PATH = os.path.join("app", "data", "evaluation", "evaluation_user_profiles.json")
-BACKEND_USER_PROFILES_PATH = os.path.join("app", "data", "evaluation", "user_profiles.json")
-# NEW: Path for the results file
-EVALUATION_RESULTS_PATH = os.path.join(os.path.dirname(__file__), "evaluation_results.json")
+BACKEND_USER_PROFILES_PATH = os.path.join("app", "data", "user_profiles.json")
+EVALUATION_RESULTS_PATH = "evaluation_results.json"
 
-def normalize_topic(topic: str) -> str:
-    """A robust function to clean and normalize a topic name."""
-    if not isinstance(topic, str):
-        return ""
-    # Get the base name (e.g., '01-My-File.md' -> '01-My-File.md')
-    base_name = os.path.basename(topic)
-    # Get the name without extension (e.g., '01-My-File.md' -> '01-My-File')
-    name_without_ext = os.path.splitext(base_name)[0]
-    # Strip any whitespace
-    return name_without_ext.strip()
+
+# --- THE FIX: The local definition of this function has been REMOVED ---
+# It now lives in app/utils.py
+
 
 def check_server_status():
     """Checks if the backend server is running before starting the evaluation."""
     try:
-        requests.get(BASE_URL + "/api/query", timeout=5)
-        print("✅ Backend server is running.")
-        return True
+        response = requests.post(BASE_URL + "/api/query", json={}, timeout=3)
+        if response.status_code == 400:
+             print("✅ Backend server is running.")
+             return True
+        return False
     except requests.exceptions.RequestException:
         print("\n❌ CRITICAL: Backend server is not running!")
         print("Please run `python app/main.py` in a separate terminal before starting the evaluation.")
@@ -44,10 +40,9 @@ def evaluate_rag_system(dataset: List[Dict[str, Any]]) -> pd.DataFrame:
 
     for i, item in enumerate(dataset):
         question = item['question']
-        ideal_keywords = set(item['ideal_answer_keywords'])
-        
-        # --- FIX: Normalize the expected sources ---
-        expected_sources = {normalize_topic(s) for s in item['expected_sources']}
+        ideal_keywords = set(kw.lower() for kw in item['ideal_answer_keywords'])
+        # +++ THE FIX: Call the function from the utils module +++
+        expected_sources = {utils.normalize_topic(s) for s in item['expected_sources']}
         
         print(f"  Testing Q{i+1}/{len(dataset)}: \"{question[:50]}...\"")
         
@@ -55,20 +50,19 @@ def evaluate_rag_system(dataset: List[Dict[str, Any]]) -> pd.DataFrame:
             response = requests.post(
                 f"{BASE_URL}/api/query",
                 json={"query": question, "user_id": "evaluation_service", "chat_history": []},
-                timeout=20
+                timeout=30
             )
             response.raise_for_status()
             data = response.json()
             
             generated_answer = data.get("answer", "").lower()
-            # --- FIX: Normalize the retrieved sources ---
             retrieved_sources_raw = data.get("sources", [])
-            retrieved_sources = {normalize_topic(s) for s in retrieved_sources_raw}
+            # +++ THE FIX: Call the function from the utils module +++
+            retrieved_sources = {utils.normalize_topic(s) for s in retrieved_sources_raw if s and s != "None"}
 
             matched_keywords = {kw for kw in ideal_keywords if kw in generated_answer}
             answer_score = len(matched_keywords) / len(ideal_keywords) if ideal_keywords else 0
 
-            # This calculation will now be accurate
             retrieval_score = len(retrieved_sources.intersection(expected_sources)) / len(expected_sources) if expected_sources else 0
             
         except requests.exceptions.RequestException as e:
@@ -77,7 +71,8 @@ def evaluate_rag_system(dataset: List[Dict[str, Any]]) -> pd.DataFrame:
             answer_score, retrieval_score = 0, 0
 
         results.append({
-            "Question": question, "Answer Score": answer_score, "Retrieval Score": retrieval_score
+            "Question": question, "Answer Score": answer_score, "Retrieval Score": retrieval_score,
+            "Retrieved Sources": ", ".join(sorted(list(retrieved_sources))) or "None"
         })
     
     print("--- RAG System Evaluation Complete ---")
@@ -87,8 +82,11 @@ def evaluate_recommendation_system(user_profiles: List[Dict], qa_dataset: List[D
     """Evaluates the recommendation system using hold-one-out cross-validation."""
     print("\n--- Starting Recommendation System Evaluation ---")
     
-    # Normalize topics in the map as well
-    query_to_topic_map = {item['question']: normalize_topic(item['expected_sources'][0]) for item in qa_dataset if item['expected_sources']}
+    # +++ THE FIX: Call the function from the utils module +++
+    query_to_topic_map = {
+        item['question']: utils.normalize_topic(item['expected_sources'][0]) 
+        for item in qa_dataset if item.get('expected_sources')
+    }
     total_prediction_steps, successful_hits = 0, 0
 
     for user in user_profiles:
@@ -104,23 +102,23 @@ def evaluate_recommendation_system(user_profiles: List[Dict], qa_dataset: List[D
             ground_truth_topic = query_to_topic_map.get(next_query)
             if not ground_truth_topic: continue
 
+            total_prediction_steps += 1
             try:
                 requests.post(
                     f"{BASE_URL}/api/query",
                     json={"query": current_query, "user_id": user_id, "chat_history": []},
-                    timeout=20
+                    timeout=30
                 )
                 
                 rec_response = requests.post(f"{BASE_URL}/api/recommendations", json={"user_id": user_id}, timeout=10)
                 rec_response.raise_for_status()
                 recommendations = rec_response.json().get("recommendations", [])
                 
-                # Normalize recommended topics before comparison
-                recommended_topics = {normalize_topic(rec['topic_id']) for rec in recommendations}
+                # +++ THE FIX: Call the function from the utils module +++
+                recommended_topics = {utils.normalize_topic(rec['topic_id']) for rec in recommendations}
 
                 if ground_truth_topic in recommended_topics:
                     successful_hits += 1
-                total_prediction_steps += 1
 
             except requests.exceptions.RequestException as e:
                 print(f"    ERROR during recommendation step for user {user_id}: {e}")
@@ -148,7 +146,6 @@ if __name__ == "__main__":
     rag_results_df = evaluate_rag_system(qa_dataset)
     rec_results = evaluate_recommendation_system(user_profiles_data, qa_dataset)
     
-    # --- Prepare Final Report Data ---
     avg_answer_score = rag_results_df['Answer Score'].mean()
     avg_retrieval_score = rag_results_df['Retrieval Score'].mean()
 
@@ -166,12 +163,10 @@ if __name__ == "__main__":
         "rag_details": rag_results_df.to_dict(orient='records')
     }
     
-    # --- NEW: Save results to a JSON file ---
     with open(EVALUATION_RESULTS_PATH, 'w') as f:
         json.dump(final_report, f, indent=4)
     print(f"\n✅ Evaluation results saved to '{EVALUATION_RESULTS_PATH}'")
 
-    # --- Print Final Report to Console ---
     print("\n\n" + "="*38)
     print("=== AI SYSTEM EVALUATION REPORT ===")
     print("="*38)
@@ -184,7 +179,7 @@ if __name__ == "__main__":
     print(f"Total Prediction Steps: {final_report['rec_summary']['prediction_steps']}")
     print(f"Recommendation Hit Rate: {final_report['rec_summary']['hit_rate']:.1%}")
     print("\n--- Detailed RAG Results ---")
-    pd.set_option('display.max_colwidth', 60)
-    pd.set_option('display.width', 100)
+    pd.set_option('display.max_colwidth', 50)
+    pd.set_option('display.width', 120)
     print(rag_results_df.to_string(index=False, float_format="%.2f"))
     print("\n" + "="*38 + "\n         END OF REPORT\n" + "="*38)

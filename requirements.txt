@@ -1,8 +1,10 @@
+streamlit
+requests
+flask
 langchain
 langchain-google-genai
-flask
-dotenv
+langchain-community
 faiss-cpu
 numpy
-scipy
-psycopg2-binary
+pandas
+python-dotenv

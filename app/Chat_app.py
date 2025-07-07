@@ -4,7 +4,6 @@ import streamlit as st
 import requests
 import re
 from datetime import datetime
-# --- FIX: Use an absolute import from the 'app' package ---
 from app.metrics_page import display_metrics
 
 # --- Page and Session State Configuration ---
@@ -25,8 +24,8 @@ def initialize_session():
         new_chat()
     if "user_id" not in st.session_state:
         st.session_state.user_id = f"user_{datetime.now().timestamp()}"
-    if "new_query" not in st.session_state:
-        st.session_state.new_query = None
+    if "request_to_process" not in st.session_state:
+        st.session_state.request_to_process = None
     if "feedback_submitted_for" not in st.session_state:
         st.session_state.feedback_submitted_for = set()
 
@@ -57,14 +56,17 @@ def new_chat():
     st.session_state.current_page = "chat"
     st.session_state.feedback_submitted_for = set()
 
-def set_new_query(query: str):
-    st.session_state.new_query = query
+def handle_button_click(display_query: str, topic_id: str = None):
+    st.session_state.request_to_process = {
+        "display_query": display_query,
+        "topic_id": topic_id
+    }
 
 initialize_session()
 
 # --- Sidebar Navigation ---
 with st.sidebar:
-    st.image("https://uploads-ssl.webflow.com/645c055c5e638d394b3b3e0e/645c05d76214150538cc8f01_Shakers%20Logo.svg", width=150)
+    st.image("https://www.shakersworks.com/hubfs/shakers_2024/logo.svg", width=150)
     st.title("AI Support Assistant")
 
     if st.button("➕ New Chat", use_container_width=True):
@@ -82,7 +84,7 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("Chat History")
     for chat_id, session_data in reversed(list(st.session_state.chat_sessions.items())):
-        if st.button(session_data['title'], key=chat_id, use_container_width=True):
+        if st.button(session_data['title'], key=f"history_{chat_id}", use_container_width=True):
             st.session_state.current_chat_id = chat_id
             st.session_state.current_page = "chat"
             st.rerun()
@@ -92,29 +94,21 @@ if st.session_state.current_page == "chat":
     current_chat = st.session_state.chat_sessions[st.session_state.current_chat_id]
     st.header(current_chat["title"])
 
-    # Display chat messages
     for i, message in enumerate(current_chat["messages"]):
         with st.chat_message(message["role"]):
             st.markdown(message["content"], unsafe_allow_html=True)
-
             is_last_assistant_message = (i == len(current_chat["messages"]) - 1 and message["role"] == "assistant")
             if is_last_assistant_message and message["content"] not in st.session_state.feedback_submitted_for:
                 if i > 0 and current_chat["messages"][i-1]["role"] == "user":
                     user_query_for_feedback = current_chat["messages"][i-1]["content"]
                     answer_for_feedback = re.split(r'\n\n\*\*Source', message["content"], flags=re.IGNORECASE)[0].strip()
-
                     st.markdown("---")
                     feedback_cols = st.columns([1, 1, 8])
                     with feedback_cols[0]:
-                        st.button("👍", key=f"helpful_{i}", on_click=send_feedback, 
-                                  args=(1, user_query_for_feedback, answer_for_feedback),
-                                  help="This response was helpful")
+                        st.button("👍", key=f"helpful_{i}", on_click=send_feedback, args=(1, user_query_for_feedback, answer_for_feedback), help="This response was helpful")
                     with feedback_cols[1]:
-                        st.button("👎", key=f"unhelpful_{i}", on_click=send_feedback,
-                                  args=(-1, user_query_for_feedback, answer_for_feedback),
-                                  help="This response was not helpful")
+                        st.button("👎", key=f"unhelpful_{i}", on_click=send_feedback, args=(-1, user_query_for_feedback, answer_for_feedback), help="This response was not helpful")
 
-    # --- UNIFIED SUGGESTION / RECOMMENDATION AREA ---
     st.markdown("---")
     is_new_chat = (len(current_chat["messages"]) <= 1)
     
@@ -123,29 +117,39 @@ if st.session_state.current_page == "chat":
         cols = st.columns(len(INITIAL_SUGGESTIONS))
         for i, suggestion in enumerate(INITIAL_SUGGESTIONS):
             with cols[i]:
-                st.button(suggestion, on_click=set_new_query, args=(suggestion,), use_container_width=True)
+                st.button(suggestion, on_click=handle_button_click, args=(suggestion,), use_container_width=True)
     
     elif current_chat.get("recommendations"):
         st.write("Here are some other topics you might find interesting:")
         cols = st.columns(len(current_chat["recommendations"]))
         for i, rec in enumerate(current_chat["recommendations"]):
             with cols[i]:
-                # --- FIX: Generate a more natural query on click ---
+                display_query = f"Please explain more about '{rec['title']}'"
                 st.button(
                     rec['title'], 
                     key=f"rec_{rec['topic_id']}_{st.session_state.current_chat_id}",
-                    on_click=set_new_query,
-                    args=(f"Please explain more about '{rec['title']}'",),
+                    on_click=handle_button_click,
+                    args=(display_query, rec['topic_id']),
                     help=rec['explanation'],
                     use_container_width=True
                 )
 
     # --- Chat Input Logic ---
-    prompt = st.session_state.new_query or st.chat_input("Ask about the RAG pipeline, recommendations, evaluation...")
-    if st.session_state.new_query:
-        st.session_state.new_query = None
+    # +++ THE FIX: Initialize 'request' to None to prevent NameError +++
+    request = None 
 
-    if prompt:
+    if st.session_state.request_to_process:
+        request = st.session_state.request_to_process
+        st.session_state.request_to_process = None
+    else:
+        user_input = st.chat_input("Ask about the RAG pipeline, recommendations, evaluation...")
+        if user_input:
+            request = {"display_query": user_input, "topic_id": None}
+
+    if request:
+        prompt = request["display_query"]
+        topic_id_from_button = request.get("topic_id")
+
         current_chat["messages"].append({"role": "user", "content": prompt})
         if current_chat["title"] == "New Chat":
             current_chat["title"] = prompt[:35] + "..." if len(prompt) > 35 else prompt
@@ -157,13 +161,10 @@ if st.session_state.current_page == "chat":
             with st.spinner("Thinking..."):
                 answer = "Sorry, an error occurred."
                 try:
-                    # Check for direct document requests (e.g. from evaluation script)
-                    direct_hit_match = re.search(r"Tell me about\s+([\w\d_-]+)", prompt, re.IGNORECASE)
-                    if direct_hit_match:
-                        topic = direct_hit_match.group(1).strip()
+                    if topic_id_from_button:
                         response = requests.post(
                             "http://127.0.0.1:5000/api/get_document", 
-                            json={"topic": topic, "user_id": st.session_state.user_id}
+                            json={"topic": topic_id_from_button, "user_id": st.session_state.user_id}
                         )
                     else:
                         response = requests.post(

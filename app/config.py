@@ -14,10 +14,9 @@ KNOWLEDGE_BASE_PATH = os.path.join(PROJECT_ROOT, 'data/knowledge_base')
 USER_PROFILES_PATH = os.path.join(BASE_DIR, 'data', 'evaluation', 'user_profiles.json')
 QUERY_LOGS_PATH = os.path.join(PROJECT_ROOT, 'query_logs.jsonl')
 FEEDBACK_LOGS_PATH = os.path.join(PROJECT_ROOT, 'feedback_logs.jsonl')
-# NEW: Path to the few-shot examples
 FEW_SHOT_EXAMPLES_PATH = os.path.join(BASE_DIR, 'data', 'evaluation', 'few_shot_examples.json')
-# NEW: Path to the main system prompt template
-KNOWLEDGE_BASE_INSTRUCTIONS_PATH = os.path.join(BASE_DIR, 'prompt')
+SYSTEM_PROMPT_PATH = os.path.join(BASE_DIR, 'prompt')
+
 
 
 # --- Model & Embedding Configuration ---

@@ -1,7 +1,7 @@
 {
     "rag_summary": {
         "total_questions": 20,
-        "avg_answer_score": 0.6200595238095239,
+        "avg_answer_score": 0.5755357142857143,
         "avg_retrieval_score": 0.825
     },
     "rec_summary": {
@@ -13,102 +13,122 @@
         {
             "Question": "What is the core mission of this AI project?",
             "Answer Score": 1.0,
-            "Retrieval Score": 1.0
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "00-Project-Overview"
         },
         {
             "Question": "What is RAG and why is it used?",
-            "Answer Score": 1.0,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.3333333333333333,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "02_01-Concepts-Intro-to-RAG, 04_03-Implementation-Conversational-Chain"
         },
         {
             "Question": "Explain the Parent Document Retriever strategy.",
-            "Answer Score": 1.0,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.875,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "04_01-Implementation-Ingestation-and-Indexing, 04_02-Implementation-Parent-Document-Retreiver, 04_03-Implementation-Conversational-Chain"
         },
         {
             "Question": "What technologies are used for the frontend and backend?",
-            "Answer Score": 0.8333333333333334,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.6666666666666666,
+            "Retrieval Score": 0.5,
+            "Retrieved Sources": "00-Project-Overview, 02_02-Concepts-LLMs-and-Google-Gemini, 06_01-Implementation-API-Endpoint, 06_02-Implementation-Frontend-Architecture"
         },
         {
             "Question": "How does the system create personalized recommendations?",
             "Answer Score": 0.6666666666666666,
-            "Retrieval Score": 1.0
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "01-Flow-Lifecycle-of-a-Query, 05_01-Implementation-User-Profile-Vector, 05_02-Implementation_Recommendation-Algorithm"
         },
         {
             "Question": "What is FAISS and what is its role in this project?",
-            "Answer Score": 1.0,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.8571428571428571,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "03_03-Tech-FAISS-The-Vector-Store, 04_03-Implementation-Conversational-Chain, 06_03-Implementation-Metrics-and-Evaluation"
         },
         {
             "Question": "What happens when a user asks a follow-up question like 'why?'",
-            "Answer Score": 0.8333333333333334,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.6666666666666666,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "01-Flow-Lifecycle-of-a-Query, 02_02-Concepts-LLMs-and-Google-Gemini, 04_03-Implementation-Conversational-Chain, 05_01-Implementation-User-Profile-Vector"
         },
         {
             "Question": "How is the user's interest profile updated over time?",
-            "Answer Score": 0.5,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.3333333333333333,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "02_02-Concepts-LLMs-and-Google-Gemini, 05_01-Implementation-User-Profile-Vector"
         },
         {
             "Question": "Describe the data ingestion and indexing pipeline.",
-            "Answer Score": 0.625,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.75,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "00-Project-Overview, 04_01-Implementation-Ingestation-and-Indexing, 06_01-Implementation-API-Endpoint"
         },
         {
             "Question": "What is the purpose of the `/api/get_document` endpoint?",
             "Answer Score": 0.5714285714285714,
-            "Retrieval Score": 1.0
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "06_01-Implementation-API-Endpoint"
         },
         {
             "Question": "How does the system know if it can't answer a question?",
             "Answer Score": 0.0,
-            "Retrieval Score": 0.0
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "01-Flow-Lifecycle-of-a-Query, 02_02-Concepts-LLMs-and-Google-Gemini, 03_03-Tech-FAISS-The-Vector-Store, 04_03-Implementation-Conversational-Chain"
         },
         {
             "Question": "What is a vector embedding?",
-            "Answer Score": 1.0,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.6666666666666666,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "02_02-Concepts-LLMs-and-Google-Gemini, 02_03-Concepts-Vector-Embeddings"
         },
         {
             "Question": "Which specific LLM and embedding models are used?",
-            "Answer Score": 0.0,
-            "Retrieval Score": 0.0
+            "Answer Score": 0.8,
+            "Retrieval Score": 0.5,
+            "Retrieved Sources": "02_02-Concepts-LLMs-and-Google-Gemini, 02_03-Concepts-Vector-Embeddings"
         },
         {
             "Question": "Why was LangChain chosen for this project?",
             "Answer Score": 0.6666666666666666,
-            "Retrieval Score": 1.0
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "00-Project-Overview, 03_01-Tech-LangChain-The-AI-Orchestrator"
         },
         {
             "Question": "How does the frontend communicate with the backend?",
-            "Answer Score": 0.16666666666666666,
-            "Retrieval Score": 0.5
+            "Answer Score": 0.5,
+            "Retrieval Score": 0.5,
+            "Retrieved Sources": "00-Project-Overview, 02_02-Concepts-LLMs-and-Google-Gemini, 06_01-Implementation-API-Endpoint, 06_02-Implementation-Frontend-Architecture"
         },
         {
             "Question": "What kind of metrics can be viewed on the dashboard?",
-            "Answer Score": 0.5714285714285714,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.8571428571428571,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "06_03-Implementation-Metrics-and-Evaluation"
         },
         {
             "Question": "How does the recommendation evaluation work?",
             "Answer Score": 0.0,
-            "Retrieval Score": 0.0
+            "Retrieval Score": 0.0,
+            "Retrieved Sources": "None"
         },
         {
             "Question": "Trace the lifecycle of a query from start to finish.",
-            "Answer Score": 0.6666666666666666,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.16666666666666666,
+            "Retrieval Score": 0.0,
+            "Retrieved Sources": "00-Project-Overview, 05_01-Implementation-User-Profile-Vector, 05_02-Implementation_Recommendation-Algorithm, 06_01-Implementation-API-Endpoint"
         },
         {
             "Question": "What is the role of session state in the Streamlit application?",
-            "Answer Score": 0.5,
-            "Retrieval Score": 1.0
+            "Answer Score": 0.3333333333333333,
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "03_02-Tech-Flask-and-Streamlit, 06_02-Implementation-Frontend-Architecture"
         },
         {
             "Question": "What are the key components of a user's profile?",
             "Answer Score": 0.8,
-            "Retrieval Score": 1.0
+            "Retrieval Score": 1.0,
+            "Retrieved Sources": "02_02-Concepts-LLMs-and-Google-Gemini, 04_02-Implementation-Parent-Document-Retreiver, 05_01-Implementation-User-Profile-Vector"
         }
     ]
 }
