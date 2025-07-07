@@ -50,3 +50,13 @@ The file paths themselves are programmatically used as citation topics by the ch
 *   **Section 02 (Concepts):** Explains foundational AI concepts like RAG, LLMs, and Vector Embeddings in simple terms.
 *   **Section 03 (Technology):** Provides an overview of the key libraries and frameworks used, like LangChain and FAISS.
 *   **Sections 04-06 (Implementation):** Contain detailed, code-level explanations of how the RAG pipeline, recommendation system, API, and frontend were built.
+
+## 5. Main Topics Available
+This knowledge base is organized into several key areas to provide a comprehensive understanding of the project. You can ask about:
+*   **The Project Flow:** How a query travels through the system from start to finish.
+*   **Core AI Concepts:** Foundational ideas like RAG, LLMs, and Vector Embeddings.
+*   **The Technology Stack:** Details on key libraries like LangChain, Flask, Streamlit, and FAISS.
+*   **The RAG Pipeline Implementation:** How we load, index, and retrieve information.
+*   **The Recommendation System:** The logic behind user profiles and personalized suggestions.
+*   **The Backend and Frontend:** The architecture of the API and the Streamlit user interface.
+*   **Metrics and Evaluation:** How the system's performance and quality are measured.

@@ -1,0 +1,24 @@
+{
+  "rag_examples": [
+    {
+      "user_query": "What is the Parent Document Retriever and why did you use it?",
+      "context_summary": "One document explains that the PDR uses small child chunks for searching and large parent chunks for generation. Another document explains this solves the precision vs. context trade-off.",
+      "assistant_answer": "The Parent Document Retriever is an advanced RAG technique that balances search precision with contextual richness [1]. It was chosen because it solves a fundamental trade-off in RAG systems: small document chunks are precise for searching but lack context, while large chunks have great context but poor search precision [2]. The PDR gets the best of both worlds by searching on small 'child' documents but returning the larger 'parent' documents to the LLM for answer generation [1].\n\nSources:\n1. 04_02-Implementation-Parent-Document-Retriever\n2. 04_01-Implementation-Ingestion-and-Indexing"
+    },
+    {
+      "user_query": "¿Cómo funciona el sistema de recomendación?",
+      "context_summary": "Un documento detalla cómo se calcula el 'profile_vector' del usuario promediando los vectores de sus consultas. Otro documento explica que se usa la similitud del coseno entre este vector y todos los documentos para encontrar los más relevantes.",
+      "assistant_answer": "El sistema de recomendación funciona creando primero un perfil de interés para el usuario, llamado `profile_vector`, que es un promedio de todas las preguntas que ha hecho [1]. Luego, para generar recomendaciones, el sistema calcula la similitud del coseno entre el `profile_vector` del usuario y el vector de cada documento en la base de conocimiento [2]. Finalmente, selecciona los documentos más relevantes que el usuario aún no ha consultado, asegurando una mezcla de relevancia y diversidad [2].\n\nSources:\n1. 05_01-Implementation-User-Profile-Vector\n2. 05_02-Implementation-Recommendation-Algorithm"
+    }
+  ],
+  "suggestion_examples": [
+    {
+      "user_query": "How do you handle payments on the Shakers platform?",
+      "assistant_suggestion": "Based on your query, you seem to be interested in the project's architecture and backend processes. You might find these topics useful:\n- 06_01-Implementation-API-Endpoints\n- 03_02-Tech-Flask-and-Streamlit"
+    },
+    {
+      "user_query": "¿Cuál es el precio de Gemini Pro?",
+      "assistant_suggestion": "Basado en tu pregunta, pareces tener interés en los modelos de IA y sus detalles técnicos. Quizás estos temas te resulten útiles:\n- 02_02-Concepts-LLMs-and-Google-Gemini\n- 03_01-Tech-LangChain-The-AI-Orchestrator"
+    }
+  ]
+}

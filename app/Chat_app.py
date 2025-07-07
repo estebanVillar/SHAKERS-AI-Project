@@ -9,6 +9,12 @@ from metrics_page import display_metrics
 # --- Page and Session State Configuration ---
 st.set_page_config(page_title="Shakers AI Chat", page_icon="🤖", layout="wide")
 
+INITIAL_SUGGESTIONS = [
+    "What is this chatbot capable of?",
+    "List the main technologies used in this chatbot.",
+    "Explain the project's architecture at a high level."
+]
+
 def initialize_session():
     if "current_page" not in st.session_state:
         st.session_state.current_page = "chat"
@@ -44,7 +50,7 @@ def new_chat():
     st.session_state.current_chat_id = chat_id
     st.session_state.chat_sessions[chat_id] = {
         "title": "New Chat",
-        "messages": [{"role": "assistant", "content": "Hello! Ask me anything about how this chatbot was built."}],
+        "messages": [{"role": "assistant", "content": "Hello! Ask me anything about how this chatbot was built, or choose one of the suggestions below."}],
         "recommendations": []
     }
     st.session_state.current_page = "chat"
@@ -74,7 +80,7 @@ with st.sidebar:
 
     st.markdown("---")
     st.subheader("Chat History")
-    for chat_id, session_data in reversed(st.session_state.chat_sessions.items()):
+    for chat_id, session_data in reversed(list(st.session_state.chat_sessions.items())):
         if st.button(session_data['title'], key=chat_id, use_container_width=True):
             st.session_state.current_chat_id = chat_id
             st.session_state.current_page = "chat"
@@ -85,18 +91,16 @@ if st.session_state.current_page == "chat":
     current_chat = st.session_state.chat_sessions[st.session_state.current_chat_id]
     st.header(current_chat["title"])
 
+    # Display chat messages
     for i, message in enumerate(current_chat["messages"]):
         with st.chat_message(message["role"]):
-            # SIMPLIFICATION: Directly render the markdown content.
-            # The backend now formats the "Sources:" list, so no special parsing is needed.
             st.markdown(message["content"], unsafe_allow_html=True)
 
             is_last_assistant_message = (i == len(current_chat["messages"]) - 1 and message["role"] == "assistant")
             if is_last_assistant_message and message["content"] not in st.session_state.feedback_submitted_for:
                 if i > 0 and current_chat["messages"][i-1]["role"] == "user":
                     user_query_for_feedback = current_chat["messages"][i-1]["content"]
-                    # Log only the main answer part for feedback
-                    answer_for_feedback = re.split(r'Sources:', message["content"], flags=re.IGNORECASE)[0].strip()
+                    answer_for_feedback = re.split(r'\n\n\*\*Source', message["content"], flags=re.IGNORECASE)[0].strip()
 
                     st.markdown("---")
                     feedback_cols = st.columns([1, 1, 8])
@@ -109,47 +113,57 @@ if st.session_state.current_page == "chat":
                                   args=(-1, user_query_for_feedback, answer_for_feedback),
                                   help="This response was not helpful")
 
-    if current_chat.get("recommendations"):
-        st.markdown("---")
-        st.write("Here are some topics you might find interesting:")
+    # --- UNIFIED SUGGESTION / RECOMMENDATION AREA ---
+    st.markdown("---")
+    is_new_chat = (len(current_chat["messages"]) <= 1)
+    
+    if is_new_chat:
+        st.write("Some things you can ask me:")
+        cols = st.columns(len(INITIAL_SUGGESTIONS))
+        for i, suggestion in enumerate(INITIAL_SUGGESTIONS):
+            with cols[i]:
+                st.button(suggestion, on_click=set_new_query, args=(suggestion,), use_container_width=True)
+    
+    elif current_chat.get("recommendations"):
+        st.write("Here are some other topics you might find interesting:")
         cols = st.columns(len(current_chat["recommendations"]))
         for i, rec in enumerate(current_chat["recommendations"]):
             with cols[i]:
+                # --- FIX: Generate a more natural query on click ---
                 st.button(
-                    rec['title'],
-                    key=f"rec_{rec['title']}_{st.session_state.current_chat_id}",
+                    rec['title'], 
+                    key=f"rec_{rec['topic_id']}_{st.session_state.current_chat_id}",
                     on_click=set_new_query,
-                    args=(f"Tell me about {rec['title']}",),
+                    args=(f"Please explain more about '{rec['title']}'",),
                     help=rec['explanation'],
                     use_container_width=True
                 )
 
+    # --- Chat Input Logic ---
     prompt = st.session_state.new_query or st.chat_input("Ask about the RAG pipeline, recommendations, evaluation...")
     if st.session_state.new_query:
-        st.session_state.new_query = None # Clear the prompt after using it
+        st.session_state.new_query = None
 
     if prompt:
         current_chat["messages"].append({"role": "user", "content": prompt})
         if current_chat["title"] == "New Chat":
             current_chat["title"] = prompt[:35] + "..." if len(prompt) > 35 else prompt
         
-        # Display user message immediately
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Get and display assistant response
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 answer = "Sorry, an error occurred."
                 try:
-                    direct_hit_match = re.search(r"Tell me about\s+(.+)", prompt, re.IGNORECASE)
+                    # Check for direct document requests (e.g. from evaluation script)
+                    direct_hit_match = re.search(r"Tell me about\s+([\w\d_-]+)", prompt, re.IGNORECASE)
                     if direct_hit_match:
                         topic = direct_hit_match.group(1).strip()
                         response = requests.post(
                             "http://127.0.0.1:5000/api/get_document", 
                             json={"topic": topic, "user_id": st.session_state.user_id}
-                        ).json()
-                        answer = response.get("answer", "Could not retrieve document.")
+                        )
                     else:
                         response = requests.post(
                             "http://127.0.0.1:5000/api/query",
@@ -158,18 +172,27 @@ if st.session_state.current_page == "chat":
                                 "chat_history": [msg for msg in current_chat["messages"] if msg['role'] in ['user', 'assistant']][:-1],
                                 "user_id": st.session_state.user_id
                             }
-                        ).json()
-                        answer = response.get("answer", "Failed to get a response from the query endpoint.")
+                        )
                     
-                    # Update recommendations after getting an answer
+                    response.raise_for_status()
+                    data = response.json()
+                    answer = data.get("answer", "Failed to get a valid response.")
+                    
                     rec_response = requests.post(
                         "http://127.0.0.1:5000/api/recommendations",
                         json={"user_id": st.session_state.user_id}
-                    ).json()
-                    current_chat["recommendations"] = rec_response.get("recommendations", [])
+                    )
+                    if rec_response.status_code == 200:
+                         current_chat["recommendations"] = rec_response.json().get("recommendations", [])
+                    else:
+                        st.warning("Could not fetch new recommendations.")
+                        current_chat["recommendations"] = []
 
                 except requests.exceptions.ConnectionError:
                     answer = "Error: Could not connect to the backend server. Is `app/main.py` running?"
+                    st.error(answer)
+                except requests.exceptions.HTTPError as e:
+                    answer = f"An API error occurred: {e.response.status_code} - {e.response.text}"
                     st.error(answer)
                 except Exception as e:
                     answer = f"An unexpected error occurred: {e}"
@@ -178,6 +201,5 @@ if st.session_state.current_page == "chat":
         current_chat["messages"].append({"role": "assistant", "content": answer})
         st.rerun()
 
-# --- Metrics Dashboard ---
 elif st.session_state.current_page == "metrics":
     display_metrics()
