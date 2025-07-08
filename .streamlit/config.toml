@@ -2,7 +2,6 @@
 # .streamlit/config.toml
 
 [theme]
-base="light"
 primaryColor="#f0ff3d"
 
 # The dark Shakers green for the main background.
