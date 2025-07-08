@@ -3,6 +3,7 @@
 # Core web frameworks
 streamlit
 flask
+tqdm
 
 # AI and Machine Learning
 langchain
