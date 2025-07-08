@@ -68,17 +68,19 @@ The application requires two separate terminal processes to run the backend and 
 2.  **Start the Frontend (Streamlit UI):**
     Open a **second** terminal, activate the virtual environment, and run:
     ```bash
-    streamlit run app/Chat_app.py
+    python -m streamlit run app/Chat_app.py
     ```
     Your web browser should automatically open to the chat application.
 
 ## 5. How to Run the Evaluation
 
-To run the full, objective quality assessment of the RAG and recommendation systems:
-
-1.  Ensure the backend server is running (see step 4.1).
-2.  Open a **third** terminal, activate the virtual environment, and run the evaluation script:
-    ```bash
-    python evaluation.py
-    ```
-    The results will be printed to the console and saved in `evaluation_results.json`. You can also view a summary of the latest evaluation run on the "Metrics" page of the Streamlit app.
+To run the full, objective quality assessment of the RAG and recommendation systems, there are two options:
+1. Run the evaluation in the terminal 
+    1.1  Ensure the backend server is running (see step 4.1).
+    1.2  Open a **third** terminal, activate the virtual environment, and run the evaluation script:
+        ```bash
+         python evaluation.py
+        ```
+        The results will be printed to the console and saved in `evaluation_results.json`. You can also view a summary of the latest evaluation run on the "Metrics" page of the Streamlit app.
+2. Run the evaluation within the **metrics** page
+    Hit the button "Run full system evaluation" and wait for the process to finish.

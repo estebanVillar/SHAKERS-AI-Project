@@ -1,7 +1,7 @@
 {
     "rag_summary": {
         "total_questions": 20,
-        "avg_answer_score": 0.5755357142857143,
+        "avg_answer_score": 0.572202380952381,
         "avg_retrieval_score": 0.825
     },
     "rec_summary": {
@@ -18,7 +18,7 @@
         },
         {
             "Question": "What is RAG and why is it used?",
-            "Answer Score": 0.3333333333333333,
+            "Answer Score": 0.6666666666666666,
             "Retrieval Score": 1.0,
             "Retrieved Sources": "02_01-Concepts-Intro-to-RAG, 04_03-Implementation-Conversational-Chain"
         },
@@ -78,13 +78,13 @@
         },
         {
             "Question": "What is a vector embedding?",
-            "Answer Score": 0.6666666666666666,
+            "Answer Score": 0.5,
             "Retrieval Score": 1.0,
             "Retrieved Sources": "02_02-Concepts-LLMs-and-Google-Gemini, 02_03-Concepts-Vector-Embeddings"
         },
         {
             "Question": "Which specific LLM and embedding models are used?",
-            "Answer Score": 0.8,
+            "Answer Score": 0.4,
             "Retrieval Score": 0.5,
             "Retrieved Sources": "02_02-Concepts-LLMs-and-Google-Gemini, 02_03-Concepts-Vector-Embeddings"
         },
@@ -114,7 +114,7 @@
         },
         {
             "Question": "Trace the lifecycle of a query from start to finish.",
-            "Answer Score": 0.16666666666666666,
+            "Answer Score": 0.3333333333333333,
             "Retrieval Score": 0.0,
             "Retrieved Sources": "00-Project-Overview, 05_01-Implementation-User-Profile-Vector, 05_02-Implementation_Recommendation-Algorithm, 06_01-Implementation-API-Endpoint"
         },

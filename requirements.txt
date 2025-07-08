@@ -1,10 +1,18 @@
+# requirements.txt
+
+# Core web frameworks
 streamlit
-requests
 flask
+
+# AI and Machine Learning
 langchain
 langchain-google-genai
 langchain-community
 faiss-cpu
 numpy
+scipy
+
+# Data handling and utility
 pandas
+requests
 python-dotenv
