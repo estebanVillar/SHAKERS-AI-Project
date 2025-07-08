@@ -25,11 +25,11 @@ def check_server_status():
     try:
         response = requests.post(BASE_URL + "/api/query", json={}, timeout=3)
         if response.status_code == 400:
-             print("✅ Backend server is running.")
+             print("OK: Backend server is running.")
              return True
         return False
     except requests.exceptions.RequestException:
-        print("\n❌ CRITICAL: Backend server is not running!")
+        print("\n CRITICAL: Backend server is not running!")
         print("Please run `python app/main.py` in a separate terminal before starting the evaluation.")
         return False
 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         with open(QA_DATASET_PATH, 'r') as f: qa_dataset = json.load(f)
         with open(USER_PROFILES_PATH, 'r') as f: user_profiles_data = json.load(f)
     except FileNotFoundError as e:
-        print(f"\n❌ CRITICAL: Could not find a required data file: {e.filename}")
+        print(f"\n CRITICAL: Could not find a required data file: {e.filename}")
         exit(1)
 
     rag_results_df = evaluate_rag_system(qa_dataset)
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     
     with open(EVALUATION_RESULTS_PATH, 'w') as f:
         json.dump(final_report, f, indent=4)
-    print(f"\n✅ Evaluation results saved to '{EVALUATION_RESULTS_PATH}'")
+    print(f"\nOK: Evaluation results saved to '{EVALUATION_RESULTS_PATH}'")
 
     print("\n\n" + "="*38)
     print("=== AI SYSTEM EVALUATION REPORT ===")
