@@ -75,12 +75,17 @@ The application requires two separate terminal processes to run the backend and 
 ## 5. How to Run the Evaluation
 
 To run the full, objective quality assessment of the RAG and recommendation systems, there are two options:
-1. Run the evaluation in the terminal 
+1. Run the evaluation in the terminal
+
     1.1  Ensure the backend server is running (see step 4.1).
+
     1.2  Open a **third** terminal, activate the virtual environment, and run the evaluation script:
+
         ```bash
          python evaluation.py
         ```
         The results will be printed to the console and saved in `evaluation_results.json`. You can also view a summary of the latest evaluation run on the "Metrics" page of the Streamlit app.
+
 2. Run the evaluation within the **metrics** page
+
     Hit the button "Run full system evaluation" and wait for the process to finish.
