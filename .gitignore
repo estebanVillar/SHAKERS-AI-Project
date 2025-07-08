@@ -1,20 +1,26 @@
-# Python
+# .gitignore
+
+# Python virtual environment
+venv/
+env/
+
+# Python cache and compiled files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-*.env
 
-# Application-generated files (Logs, Cache, User Data)
+# Local environment variables - VERY IMPORTANT
+# This file contains your secret API key and must NOT be committed.
+.env
+
+# Application-generated CACHE files
 /app/cache/
-/app/data/user_profiles.json
-*.jsonl
+
+# Application-generated RESULT files
 evaluation_results.json
 
-# IDE and OS files
+# IDE and OS specific files
 .idea/
 .vscode/
 .DS_Store
