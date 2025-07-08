@@ -81,9 +81,9 @@ To run the full, objective quality assessment of the RAG and recommendation syst
 
     1.2  Open a **third** terminal, activate the virtual environment, and run the evaluation script:
 
-        ```bash
+   ```bash
          python evaluation.py
-        ```
+    ```
         The results will be printed to the console and saved in `evaluation_results.json`. You can also view a summary of the latest evaluation run on the "Metrics" page of the Streamlit app.
 
 2. Run the evaluation within the **metrics** page
