@@ -1,0 +1,16 @@
+[
+    {
+        "user_id": "eval_user_01",
+        "query_history": [
+            "What is this chatbot capable of?",
+            "List the main technologies used in this chatbot."
+        ]
+    },
+    {
+        "user_id": "eval_user_02",
+        "query_history": [
+            "Explain the project's architecture at a high level.",
+            "How does the RAG pipeline work?"
+        ]
+    }
+]
