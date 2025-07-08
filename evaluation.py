@@ -5,7 +5,6 @@ import json
 import requests
 import pandas as pd
 from typing import List, Dict, Any
-# +++ THE FIX: Import the utils module to access the shared function +++
 from app import utils
 
 # --- CONFIGURATION ---
@@ -14,11 +13,6 @@ QA_DATASET_PATH = os.path.join("app", "data", "evaluation", "qa_dataset.json")
 USER_PROFILES_PATH = os.path.join("app", "data", "evaluation", "evaluation_user_profiles.json")
 BACKEND_USER_PROFILES_PATH = os.path.join("app", "data", "user_profiles.json")
 EVALUATION_RESULTS_PATH = "evaluation_results.json"
-
-
-# --- THE FIX: The local definition of this function has been REMOVED ---
-# It now lives in app/utils.py
-
 
 def check_server_status():
     """Checks if the backend server is running before starting the evaluation."""
@@ -81,8 +75,7 @@ def evaluate_rag_system(dataset: List[Dict[str, Any]]) -> pd.DataFrame:
 def evaluate_recommendation_system(user_profiles: List[Dict], qa_dataset: List[Dict]) -> Dict[str, Any]:
     """Evaluates the recommendation system using hold-one-out cross-validation."""
     print("\n--- Starting Recommendation System Evaluation ---")
-    
-    # +++ THE FIX: Call the function from the utils module +++
+
     query_to_topic_map = {
         item['question']: utils.normalize_topic(item['expected_sources'][0]) 
         for item in qa_dataset if item.get('expected_sources')
@@ -114,7 +107,7 @@ def evaluate_recommendation_system(user_profiles: List[Dict], qa_dataset: List[D
                 rec_response.raise_for_status()
                 recommendations = rec_response.json().get("recommendations", [])
                 
-                # +++ THE FIX: Call the function from the utils module +++
+              
                 recommended_topics = {utils.normalize_topic(rec['topic_id']) for rec in recommendations}
 
                 if ground_truth_topic in recommended_topics:
